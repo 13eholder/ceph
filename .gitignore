@@ -63,6 +63,8 @@ GTAGS
 # common cmake build dir
 /build
 /build.*
+/build_nodashboard
+/build_nodashboard.*
 
 # editor backup files etc.
 \#*\#

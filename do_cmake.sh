@@ -14,7 +14,7 @@ if [ -e $BUILD_DIR ]; then
 fi
 
 PYBUILD="3"
-ARGS="-GNinja"
+ARGS="-GNinja -DCMAKE_EXPORT_COMPILE_COMMANDS=on -DCMAKE_BUILD_TYPE=Release -DBOOST_J=64"
 if [ -r /etc/os-release ]; then
   source /etc/os-release
   case "$ID" in
