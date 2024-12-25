@@ -75,6 +75,7 @@ else(WITH_SYSTEM_NPM)
     TARGET mgr-dashboard-nodeenv
     OPTION python=${MGR_PYTHON_EXECUTABLE}
     OPTION cache=${mgr-dashboard-nodeenv-dir}/.npm
+    OPTION registry=https://registry.npmmirror.com/
     ${npm_registry_opts})
   add_custom_target(mgr-dashboard-frontend-deps
     DEPENDS node_modules mgr-dashboard-nodeenv
