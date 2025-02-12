@@ -152,9 +152,9 @@ ceph-deploy --overwrite-conf osd create --data /dev/nvme2n1p1 --bluestore s52
 [s52][DEBUG ] connected to host: s52 
 [ceph_deploy.osd][INFO  ] Distro info: ubuntu 20.04 focal
 [ceph_deploy.osd][DEBUG ] Deploying osd to s52
-[s52][INFO  ] Running command: sudo /usr/sbin/ceph-volume --cluster ceph lvm create --bluestore --data /dev/nvme2n1p1
+[s52][INFO  ] Running command: `sudo /usr/sbin/ceph-volume --cluster ceph lvm create --bluestore --data /dev/nvme2n1p1`
 [s52][WARNIN] Running command: /usr/bin/ceph-authtool --gen-print-key
-[s52][WARNIN] Running command: /usr/bin/ceph --cluster ceph --name client.bootstrap-osd --keyring /var/lib/ceph/bootstrap-osd/ceph.keyring -i - osd new d09c7704-b31f-4318-a395-fd6eb2708901
+[s52][WARNIN] Running command: `/usr/bin/ceph --cluster ceph --name client.bootstrap-osd --keyring /var/lib/ceph/bootstrap-osd/ceph.keyring -i - osd new d09c7704-b31f-4318-a395-fd6eb2708901`
 [s52][WARNIN] Running command: vgcreate --force --yes ceph-845ca605-3b23-47d8-a114-f0e185d97701 /dev/nvme2n1p1
 [s52][WARNIN]  stdout: Physical volume "/dev/nvme2n1p1" successfully created.
 [s52][WARNIN]  stdout: Volume group "ceph-845ca605-3b23-47d8-a114-f0e185d97701" successfully created
@@ -165,7 +165,7 @@ ceph-deploy --overwrite-conf osd create --data /dev/nvme2n1p1 --bluestore s52
 [s52][WARNIN] --> Executable selinuxenabled not in PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin
 [s52][WARNIN] Running command: /usr/bin/chown -h ceph:ceph /dev/ceph-845ca605-3b23-47d8-a114-f0e185d97701/osd-block-d09c7704-b31f-4318-a395-fd6eb2708901
 [s52][WARNIN] Running command: /usr/bin/chown -R ceph:ceph /dev/dm-1
-[s52][WARNIN] Running command: /usr/bin/ln -s /dev/ceph-845ca605-3b23-47d8-a114-f0e185d97701/osd-block-d09c7704-b31f-4318-a395-fd6eb2708901 /var/lib/ceph/osd/ceph-1/block
+[s52][WARNIN] Running command: `/usr/bin/ln -s /dev/ceph-845ca605-3b23-47d8-a114-f0e185d97701/osd-block-d09c7704-b31f-4318-a395-fd6eb2708901 /var/lib/ceph/osd/ceph-1/block`
 [s52][WARNIN] Running command: /usr/bin/ceph --cluster ceph --name client.bootstrap-osd --keyring /var/lib/ceph/bootstrap-osd/ceph.keyring mon getmap -o /var/lib/ceph/osd/ceph-1/activate.monmap
 [s52][WARNIN]  stderr: 2025-01-02T20:02:42.406+0800 7efd349ea700 -1 auth: unable to find a keyring on `/etc/ceph/ceph.client.bootstrap-osd.keyring,/etc/ceph/ceph.keyring,/etc/ceph/keyring,/etc/ceph/keyring.bin`: (2) No such file or directory
 [s52][WARNIN] 2025-01-02T20:02:42.406+0800 7efd349ea700 -1 AuthRegistry(0x7efd300610f0) no keyring found at /etc/ceph/ceph.client.bootstrap-osd.keyring,/etc/ceph/ceph.keyring,/etc/ceph/keyring,/etc/ceph/keyring.bin, disabling cephx
@@ -173,7 +173,7 @@ ceph-deploy --overwrite-conf osd create --data /dev/nvme2n1p1 --bluestore s52
 [s52][WARNIN] --> Creating keyring file for osd.1
 [s52][WARNIN] Running command: /usr/bin/chown -R ceph:ceph /var/lib/ceph/osd/ceph-1/keyring
 [s52][WARNIN] Running command: /usr/bin/chown -R ceph:ceph /var/lib/ceph/osd/ceph-1/
-[s52][WARNIN] Running command: /usr/bin/ceph-osd --cluster ceph --osd-objectstore bluestore --mkfs -i 1 --monmap /var/lib/ceph/osd/ceph-1/activate.monmap --keyfile - --osd-data /var/lib/ceph/osd/ceph-1/ --osd-uuid d09c7704-b31f-4318-a395-fd6eb2708901 --setuser ceph --setgroup ceph
+[s52][WARNIN] Running command: `/usr/bin/ceph-osd --cluster ceph --osd-objectstore bluestore --mkfs -i 1 --monmap /var/lib/ceph/osd/ceph-1/activate.monmap --keyfile - --osd-data /var/lib/ceph/osd/ceph-1/ --osd-uuid d09c7704-b31f-4318-a395-fd6eb2708901 --setuser ceph --setgroup ceph`
 [s52][WARNIN]  stderr: 2025-01-02T20:02:42.630+0800 7f0e9e3853c0 -1 bluestore(/var/lib/ceph/osd/ceph-1/) _read_fsid unparsable uuid
 [s52][WARNIN]  stderr: 2025-01-02T20:02:43.445+0800 7f0e9e3853c0 -1 bluestore::NCB::__restore_allocator::Failed open_for_read with error-code -2
 [s52][WARNIN]  stderr: 2025-01-02T20:02:44.233+0800 7f0e9e3853c0 -1 bluestore::NCB::__restore_allocator::Failed open_for_read with error-code -2
@@ -262,3 +262,22 @@ sudo ceph auth get-or-create osd.0 osd 'allow *' mon 'allow rwx' mgr 'allow prof
  
 
 sudo journalctl -u ceph-mon@s52  
+
+###
+
+Ceph 的 BlueStore 后端支持将多个设备与单个 OSD 关联，具体分为以下几种角色：
+
+主设备（Primary Device）：用于存储实际数据（由 --data 参数指定）。
+
+WAL 设备（Write-Ahead Log Device）：用于存储 BlueStore 的 WAL（Write-Ahead Log），通常是一个高性能设备（如 SSD/NVMe），由 --block.wal 参数指定。
+
+DB 设备（Database Device）：用于存储 BlueStore 的内部元数据（如 RocksDB 数据），通常也是一个高性能设备，由 --block.db 参数指定。
+
+例如，以下命令将创建一个 OSD，并使用不同的设备分别存储数据、WAL 和 DB：
+
+ceph-volume lvm create --data /dev/sdb --block.wal /dev/nvme0n1 --block.db /dev/nvme0n2
+
+
+
+
+/usr/bin/ceph-osd --cluster ceph --osd-objectstore bluestore --mkfs -i 1 --monmap /var/lib/ceph/osd/ceph-1/activate.monmap --keyfile - --osd-data /var/lib/ceph/osd/ceph-1/ --osd-uuid d09c7704-b31f-4318-a395-fd6eb2708901 --setuser ceph --setgroup ceph
