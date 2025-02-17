@@ -45,59 +45,98 @@ ceph-deploy getherkeys s52
 
 <!-- sudo chown ceph:ceph /etc/ceph/ceph.client.admin.keyring -->
 <!-- sudo chmod 666 /etc/ceph/ceph.client.admin.keyring -->
+ceph-deploy --overwrite-conf osd create --data /dev/nvme2n1p1 --bluestore s52 
+ceph-deploy --overwrite-conf osd create --data /dev/nvme2n1p2 --bluestore s52 
+ceph-deploy --overwrite-conf osd create --data /dev/nvme2n1p3 --bluestore s52 
 
 
-### 创建虚拟盘[Deprecated]
-<!-- sudo dd if=/dev/zero of=/var/lib/ceph/osd/osd1.img bs=1G count=300
-sudo dd if=/dev/zero of=/var/lib/ceph/osd/osd2.img bs=1G count=300
-sudo dd if=/dev/zero of=/var/lib/ceph/osd/osd3.img bs=1G count=300
+ceph-deploy --overwrite-conf osd create s52 --bluestore --data /dev/nvme2n1p1 --block-db /dev/nvme2n1p2 --block-wal /dev/nvme2n1p3  
 
-sudo losetup /dev/loop1 /var/lib/ceph/osd/osd1.img
-sudo losetup /dev/loop2 /var/lib/ceph/osd/osd2.img
-sudo losetup /dev/loop3 /var/lib/ceph/osd/osd3.img
-
-sudo losetup -f /var/lib/ceph/osd/osd1.img
-sudo losetup -f /var/lib/ceph/osd/osd2.img
-sudo losetup -f /var/lib/ceph/osd/osd3.img
-
-losetup -a 查看
-
-/dev/loop0: []: (/var/lib/ceph/osd/osd1.img)
-/dev/loop1: []: (/var/lib/ceph/osd/osd2.img)
-/dev/loop4: []: (/var/lib/ceph/osd/osd3.img)
-/dev/loop2: []: (/var/lib/snapd/snaps/snapd_23258.snap)
-/dev/loop7: []: (/var/lib/snapd/snaps/core20_2434.snap)
-/dev/loop5: []: (/var/lib/snapd/snaps/core20_1828.snap)
-/dev/loop3: []: (/var/lib/snapd/snaps/snapd_21759.snap)
-
-sudo mkfs.xfs /dev/loop0
-sudo mkfs.xfs /dev/loop1
-sudo mkfs.xfs /dev/loop4
-
-挂载
-sudo mkdir -p /var/lib/ceph/osd/osd1
-sudo mkdir -p /var/lib/ceph/osd/osd2
-sudo mkdir -p /var/lib/ceph/osd/osd3
-
-sudo mount /dev/loop0 /var/lib/ceph/osd/osd1
-sudo mount /dev/loop1 /var/lib/ceph/osd/osd2
-sudo mount /dev/loop4 /var/lib/ceph/osd/osd3
-
-ceph-deploy --overwrite-conf osd create --data /dev/nvme0n1p1 --bluestore `hostname`
-
-sudo umount /var/lib/ceph/osd/osd1
-sudo umount /var/lib/ceph/osd/osd2
-sudo umount /var/lib/ceph/osd/osd3
-删除回环设备：
-
-sudo losetup -d /dev/loop0
-sudo losetup -d /dev/loop1
-sudo losetup -d /dev/loop4
-删除虚拟磁盘文件：
-
-sudo rm /var/lib/ceph/osd/osd1.img
-sudo rm /var/lib/ceph/osd/osd2.img
-sudo rm /var/lib/ceph/osd/osd3.img -->
+### 
+ceph-deploy --overwrite-conf osd create s52 --bluestore --data /dev/nvme2n1p1 --block-db /dev/nvme2n1p2 --block-wal /dev/nvme2n1p3   
+[ceph_deploy.conf][DEBUG ] found configuration file at: /home/zmy/.cephdeploy.conf
+[ceph_deploy.cli][INFO  ] Invoked (2.0.1): /usr/bin/ceph-deploy --overwrite-conf osd create s52 --bluestore --data /dev/nvme2n1p1 --block-db /dev/nvme2n1p2 --block-wal /dev/nvme2n1p3
+[ceph_deploy.cli][INFO  ] ceph-deploy options:
+[ceph_deploy.cli][INFO  ]  verbose                       : False
+[ceph_deploy.cli][INFO  ]  quiet                         : False
+[ceph_deploy.cli][INFO  ]  username                      : None
+[ceph_deploy.cli][INFO  ]  overwrite_conf                : True
+[ceph_deploy.cli][INFO  ]  ceph_conf                     : None
+[ceph_deploy.cli][INFO  ]  cluster                       : ceph
+[ceph_deploy.cli][INFO  ]  subcommand                    : create
+[ceph_deploy.cli][INFO  ]  cd_conf                       : <ceph_deploy.conf.cephdeploy.Conf object at 0x7faf6e31e3a0>
+[ceph_deploy.cli][INFO  ]  default_release               : False
+[ceph_deploy.cli][INFO  ]  func                          : <function osd at 0x7faf6e39ba60>
+[ceph_deploy.cli][INFO  ]  data                          : /dev/nvme2n1p1
+[ceph_deploy.cli][INFO  ]  journal                       : None
+[ceph_deploy.cli][INFO  ]  zap_disk                      : False
+[ceph_deploy.cli][INFO  ]  fs_type                       : xfs
+[ceph_deploy.cli][INFO  ]  dmcrypt                       : False
+[ceph_deploy.cli][INFO  ]  dmcrypt_key_dir               : /etc/ceph/dmcrypt-keys
+[ceph_deploy.cli][INFO  ]  filestore                     : None
+[ceph_deploy.cli][INFO  ]  bluestore                     : True
+[ceph_deploy.cli][INFO  ]  block_db                      : /dev/nvme2n1p2
+[ceph_deploy.cli][INFO  ]  block_wal                     : /dev/nvme2n1p3
+[ceph_deploy.cli][INFO  ]  host                          : s52
+[ceph_deploy.cli][INFO  ]  debug                         : False
+[ceph_deploy.osd][DEBUG ] Creating OSD on cluster ceph with data device /dev/nvme2n1p1
+[s52][DEBUG ] connection detected need for sudo
+[s52][DEBUG ] connected to host: s52 
+[ceph_deploy.osd][INFO  ] Distro info: ubuntu 20.04 focal
+[ceph_deploy.osd][DEBUG ] Deploying osd to s52
+[s52][WARNIN] osd keyring does not exist yet, creating one
+[s52][INFO  ] Running command: `sudo /usr/sbin/ceph-volume --cluster ceph lvm create --bluestore --data /dev/nvme2n1p1 --block.wal /dev/nvme2n1p3 --block.db /dev/nvme2n1p2`
+[s52][WARNIN] Running command: /usr/bin/ceph-authtool --gen-print-key
+[s52][WARNIN] Running command: /usr/bin/ceph --cluster ceph --name client.bootstrap-osd --keyring /var/lib/ceph/bootstrap-osd/ceph.keyring -i - osd new 02ac87a4-aba3-4c5f-930a-c7aec72d0f5c
+[s52][WARNIN] Running command: vgcreate --force --yes ceph-3a109204-9a2c-497f-8f1f-a8d774fe8c61 /dev/nvme2n1p1
+[s52][WARNIN]  stdout: Physical volume "/dev/nvme2n1p1" successfully created.
+[s52][WARNIN]  stdout: Volume group "ceph-3a109204-9a2c-497f-8f1f-a8d774fe8c61" successfully created
+[s52][WARNIN] Running command: lvcreate --yes -l 71525 -n osd-block-02ac87a4-aba3-4c5f-930a-c7aec72d0f5c ceph-3a109204-9a2c-497f-8f1f-a8d774fe8c61
+[s52][WARNIN]  stdout: Logical volume "osd-block-02ac87a4-aba3-4c5f-930a-c7aec72d0f5c" created.
+[s52][WARNIN] Running command: /usr/bin/ceph-authtool --gen-print-key
+[s52][WARNIN] Running command: /usr/bin/mount -t tmpfs tmpfs /var/lib/ceph/osd/ceph-0
+[s52][WARNIN] --> Executable selinuxenabled not in PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin
+[s52][WARNIN] Running command: /usr/bin/chown -h ceph:ceph /dev/ceph-3a109204-9a2c-497f-8f1f-a8d774fe8c61/osd-block-02ac87a4-aba3-4c5f-930a-c7aec72d0f5c
+[s52][WARNIN] Running command: /usr/bin/chown -R ceph:ceph /dev/dm-1
+[s52][WARNIN] Running command: /usr/bin/ln -s /dev/ceph-3a109204-9a2c-497f-8f1f-a8d774fe8c61/osd-block-02ac87a4-aba3-4c5f-930a-c7aec72d0f5c /var/lib/ceph/osd/ceph-0/block
+[s52][WARNIN] Running command: /usr/bin/ceph --cluster ceph --name client.bootstrap-osd --keyring /var/lib/ceph/bootstrap-osd/ceph.keyring mon getmap -o /var/lib/ceph/osd/ceph-0/activate.monmap
+[s52][WARNIN]  stderr: 2025-02-14T13:43:00.901+0800 7fc138b13700 -1 auth: unable to find a keyring on /etc/ceph/ceph.client.bootstrap-osd.keyring,/etc/ceph/ceph.keyring,/etc/ceph/keyring,/etc/ceph/keyring.bin: (2) No such file or directory
+[s52][WARNIN] 2025-02-14T13:43:00.901+0800 7fc138b13700 -1 AuthRegistry(0x7fc1340610f0) no keyring found at /etc/ceph/ceph.client.bootstrap-osd.keyring,/etc/ceph/ceph.keyring,/etc/ceph/keyring,/etc/ceph/keyring.bin, disabling cephx
+[s52][WARNIN]  stderr: got monmap epoch 1
+[s52][WARNIN] --> Creating keyring file for osd.0
+[s52][WARNIN] Running command: /usr/bin/chown -R ceph:ceph /var/lib/ceph/osd/ceph-0/keyring
+[s52][WARNIN] Running command: /usr/bin/chown -R ceph:ceph /var/lib/ceph/osd/ceph-0/
+[s52][WARNIN] Running command: /usr/bin/chown -R ceph:ceph /dev/nvme2n1p3
+[s52][WARNIN] Running command: /usr/bin/chown -R ceph:ceph /dev/nvme2n1p2
+[s52][WARNIN] Running command: `/usr/bin/ceph-osd --cluster ceph --osd-objectstore bluestore --mkfs -i 0 --monmap /var/lib/ceph/osd/ceph-0/activate.monmap --keyfile - --bluestore-block-wal-path /dev/nvme2n1p3 --bluestore-block-db-path /dev/nvme2n1p2 --osd-data /var/lib/ceph/osd/ceph-0/ --osd-uuid 02ac87a4-aba3-4c5f-930a-c7aec72d0f5c --setuser ceph --setgroup ceph`
+[s52][WARNIN]  stderr: 2025-02-14T13:43:01.117+0800 7f6b5b6fa3c0 -1 bluestore(/var/lib/ceph/osd/ceph-0/) _read_fsid unparsable uuid
+[s52][WARNIN]  stderr: 2025-02-14T13:43:02.177+0800 7f6b5b6fa3c0 -1 bluestore::NCB::__restore_allocator::Failed open_for_read with error-code -2
+[s52][WARNIN]  stderr: 2025-02-14T13:43:03.969+0800 7f6b5b6fa3c0 -1 bluestore::NCB::__restore_allocator::Failed open_for_read with error-code -2
+[s52][WARNIN] --> ceph-volume lvm prepare successful for: /dev/nvme2n1p1
+[s52][WARNIN] Running command: /usr/bin/chown -R ceph:ceph /var/lib/ceph/osd/ceph-0
+[s52][WARNIN] Running command: `/usr/bin/ceph-bluestore-tool --cluster=ceph prime-osd-dir --dev /dev/ceph-3a109204-9a2c-497f-8f1f-a8d774fe8c61/osd-block-02ac87a4-aba3-4c5f-930a-c7aec72d0f5c --path /var/lib/ceph/osd/ceph-0 --no-mon-config`
+[s52][WARNIN] Running command: /usr/bin/ln -snf /dev/ceph-3a109204-9a2c-497f-8f1f-a8d774fe8c61/osd-block-02ac87a4-aba3-4c5f-930a-c7aec72d0f5c /var/lib/ceph/osd/ceph-0/block
+[s52][WARNIN] Running command: /usr/bin/chown -h ceph:ceph `/var/lib/ceph/osd/ceph-0/block`
+[s52][WARNIN] Running command: /usr/bin/chown -R ceph:ceph /dev/dm-1
+[s52][WARNIN] Running command: /usr/bin/chown -R ceph:ceph /var/lib/ceph/osd/ceph-0
+[s52][WARNIN] Running command: /usr/bin/ln -snf /dev/nvme2n1p2 `/var/lib/ceph/osd/ceph-0/block.db`
+[s52][WARNIN] Running command: /usr/bin/chown -R ceph:ceph /dev/nvme2n1p2
+[s52][WARNIN] Running command: /usr/bin/chown -h ceph:ceph /var/lib/ceph/osd/ceph-0/block.db
+[s52][WARNIN] Running command: /usr/bin/chown -R ceph:ceph /dev/nvme2n1p2
+[s52][WARNIN] Running command: /usr/bin/ln -snf /dev/nvme2n1p3 `/var/lib/ceph/osd/ceph-0/block.wal`
+[s52][WARNIN] Running command: /usr/bin/chown -R ceph:ceph /dev/nvme2n1p3
+[s52][WARNIN] Running command: /usr/bin/chown -h ceph:ceph /var/lib/ceph/osd/ceph-0/block.wal
+[s52][WARNIN] Running command: /usr/bin/chown -R ceph:ceph /dev/nvme2n1p3
+[s52][WARNIN] Running command: /usr/bin/systemctl enable ceph-volume@lvm-0-02ac87a4-aba3-4c5f-930a-c7aec72d0f5c
+[s52][WARNIN]  stderr: Created symlink /etc/systemd/system/multi-user.target.wants/ceph-volume@lvm-0-02ac87a4-aba3-4c5f-930a-c7aec72d0f5c.service → /lib/systemd/system/ceph-volume@.service.
+[s52][WARNIN] Running command: /usr/bin/systemctl enable --runtime ceph-osd@0
+[s52][WARNIN] Running command: /usr/bin/systemctl start ceph-osd@0
+[s52][WARNIN] --> ceph-volume lvm activate successful for osd ID: 0
+[s52][WARNIN] --> ceph-volume lvm create successful for: /dev/nvme2n1p1
+[s52][INFO  ] checking OSD status...
+[s52][INFO  ] Running command: sudo /bin/ceph --cluster=ceph osd stat --format=json
+[s52][WARNIN] there is 1 OSD down
+[ceph_deploy.osd][DEBUG ] Host s52 is now ready for osd use.
 
 ### 创建分区
 nvme2n1盘有1.8T内存，并且没有被挂载,在此基础上划分分区并作为ceph osd
@@ -119,8 +158,7 @@ sudo ceph-volume lvm zap /dev/nvme2n1p1
 sudo ceph-volume lvm zap /dev/nvme2n1p2
 sudo ceph-volume lvm zap /dev/nvme2n1p3
 
-
-#### 未解决的问题,创建OSD报错
+#### 创建OSD
 ceph-deploy --overwrite-conf osd create --data /dev/nvme2n1p1 --bluestore s52  
 [ceph_deploy.conf][DEBUG ] found configuration file at: /home/ceph/.cephdeploy.conf
 [ceph_deploy.cli][INFO  ] Invoked (2.0.1): /usr/bin/ceph-deploy --overwrite-conf osd create --data /dev/nvme2n1p1 --bluestore s52
@@ -179,7 +217,7 @@ ceph-deploy --overwrite-conf osd create --data /dev/nvme2n1p1 --bluestore s52
 [s52][WARNIN]  stderr: 2025-01-02T20:02:44.233+0800 7f0e9e3853c0 -1 bluestore::NCB::__restore_allocator::Failed open_for_read with error-code -2
 [s52][WARNIN] --> ceph-volume lvm prepare successful for: /dev/nvme2n1p1
 [s52][WARNIN] Running command: /usr/bin/chown -R ceph:ceph /var/lib/ceph/osd/ceph-1
-[s52][WARNIN] Running command: /usr/bin/ceph-bluestore-tool --cluster=ceph prime-osd-dir --dev /dev/ceph-845ca605-3b23-47d8-a114-f0e185d97701/osd-block-d09c7704-b31f-4318-a395-fd6eb2708901 --path /var/lib/ceph/osd/ceph-1 --no-mon-config
+[s52][WARNIN] Running command: `/usr/bin/ceph-bluestore-tool --cluster=ceph prime-osd-dir --dev /dev/ceph-845ca605-3b23-47d8-a114-f0e185d97701/osd-block-d09c7704-b31f-4318-a395-fd6eb2708901 --path /var/lib/ceph/osd/ceph-1 --no-mon-config`
 [s52][WARNIN] Running command: /usr/bin/ln -snf /dev/ceph-845ca605-3b23-47d8-a114-f0e185d97701/osd-block-d09c7704-b31f-4318-a395-fd6eb2708901 /var/lib/ceph/osd/ceph-1/block
 [s52][WARNIN] Running command: /usr/bin/chown -h ceph:ceph /var/lib/ceph/osd/ceph-1/block
 [s52][WARNIN] Running command: /usr/bin/chown -R ceph:ceph /dev/dm-1
